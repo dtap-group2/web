@@ -108,7 +108,7 @@ const updateSummary = async (incrementValue) => {
 };
 
 router.post("/testjson", (req, res) => {
-  if (Math.random() > 0.9) {
+  if (Math.random() < 0.9) {
     console.log(req.body);
     res.send("Success");
   } else {
