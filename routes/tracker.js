@@ -2,6 +2,20 @@ const express = require("express");
 const router = express.Router();
 const Frame = require("../models/frame");
 const Summary = require("../models/summary");
+const multer = require("multer");
+const path = require("path");
+const cleardir = require("../utils/cleardir");
+const { rmSync } = require("fs");
+
+//multer options
+const upload = multer({
+  dest: "frames",
+});
+
+const preframeupload = (req, res, next) => {
+  const destination = path.join(__dirname, "../frames");
+  cleardir(destination).then(next());
+};
 
 // * Initialize a tracker
 router.post("/init", (req, res) => {
@@ -92,5 +106,26 @@ const updateSummary = async (incrementValue) => {
     });
   }
 };
+
+router.post("/testjson", (req, res) => {
+  if (Math.random() > 0.9) {
+    console.log(req.body);
+    res.send("Success");
+  } else {
+    res.status(400).send("Fail");
+  }
+});
+
+router.post(
+  "/frame",
+  preframeupload,
+  upload.single("upload"),
+  (req, res) => {
+    res.send();
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 
 module.exports = router;

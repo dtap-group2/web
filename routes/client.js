@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Summary = require("../models/summary");
+const fs = require("fs");
+const path = require("path");
 
 //* Initialize client webrouter
 router.post("/init", (req, res) => {
@@ -64,6 +66,18 @@ router.post("/stop-tracker", (req, res) => {
   //Req
   //  - ID
   res.status(200).send("Stopped tracker #" + req.body.ID);
+});
+
+//* Get the latest frame from tracker
+router.get("/frame", async (req, res) => {
+  fs.readdir(path.join(__dirname, "../frames"), (err, files) => {
+    if (err) {
+      res.status(400).send("No frame available");
+    } else {
+      console.log(files);
+      res.sendFile(path.join(__dirname, "../frames", files[0]));
+    }
+  });
 });
 
 module.exports = router;
