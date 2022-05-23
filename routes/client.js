@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const graphRouter = require("./graph/graph");
 const Summary = require("../models/summary");
 const fs = require("fs");
 const path = require("path");
+
+router.use("/graph", graphRouter);
 
 //* Initialize client webrouter
 router.post("/init", (req, res) => {

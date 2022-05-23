@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../common.css">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+     <!-- Font Awesome JS -->
+     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper">
+
+        <nav id="sidebar" class="border-end">
+            <ul class="list-unstyled components sidebar-links">
+                <li>
+                    <img src="../icons/dashboard_i.svg" alt="" class="sidebar-icon">
+                    <h6><a href="/" class="text-reset text-decoration-none stretched-link">Dashboard</a></h6>
+                </li>
+                <li class="active">
+                    <img src="../icons/boundary_sidebar_i.svg" alt="" class="sidebar-icon">
+                    <h6><a href="/boundary" class="text-reset text-decoration-none stretched-link">Detection boundary</a></h6>
+                </li>
+                <li>
+                    <img src="../icons/settings_i.svg" alt="" class="sidebar-icon">
+                    <h6><a href="/settings" class="text-reset text-decoration-none stretched-link">Settings</a></h6>
+                </li>
+            </ul>
+        </nav>
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light ">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary text-white">
+                        <i class="fas fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
+        
+                </div>
+            </nav>
+        </div>
+    </div>
+        <!-- JavaScript Bundle with Popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <script src="../scripts/toggleSidebar.js"></script>
+        <script>
+        function updateData() {
+            console.log("hello");
+            fetch("/client/get-data").then((res) => res.json()).then((summary) => {
+                console.log(summary);
+                document.getElementById("event-count").textContent = (summary.eventCount);
+            }).catch(console.error);
+        }
+    </script>
+</body>
+</html>

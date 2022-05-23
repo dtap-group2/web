@@ -112,6 +112,7 @@ router.post("/testjson", (req, res) => {
     console.log(req.body);
     res.send("Success");
   } else {
+    console.log("hello");
     res.status(400).send("Fail");
   }
 });
