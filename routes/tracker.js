@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const Frame = require("../models/frame");
+const Hour = require("../models/hourFrame");
+const Day = require("../models/dayFrame");
+const Week = require("../models/weekFrame");
+const Month = require("../models/monthFrame");
+const Year = require("../models/yearFrame");
 const Summary = require("../models/summary");
 const multer = require("multer");
 const path = require("path");
 const cleardir = require("../utils/cleardir");
 const { rmSync } = require("fs");
+const dayjs = require("dayjs");
 
 //multer options
 const upload = multer({
@@ -55,11 +61,12 @@ router.post("/update-data", async (req, res) => {
   // }
   //Update database
   console.log(req.body);
-  const newFrame = req.body;
-  const frameCount = await Frame.estimatedDocumentCount();
 
-  if (frameCount) {
-    try {
+  try {
+    const newFrame = req.body;
+    const frameCount = await Frame.estimatedDocumentCount();
+
+    if (frameCount) {
       const oldFrame = await Frame.findOneAndReplace(
         { totalCount: { $gte: 0 } },
         newFrame,
@@ -68,44 +75,47 @@ router.post("/update-data", async (req, res) => {
 
       if (newFrame.totalCount > oldFrame.totalCount) {
         const additionalVisitor = newFrame.totalCount - oldFrame.totalCount;
-        updateSummary(additionalVisitor);
+        await updateHour(additionalVisitor, newFrame.timestamp);
       }
 
       res.status(200).send(newFrame);
-    } catch (error) {
-      console.error(newFrame, error);
-      res.status(500).send(error);
-    }
-  } else {
-    try {
+    } else {
       const newFrame = await Frame.create(req.body);
-      await updateSummary(newFrame.totalCount);
+      await updateHour(newFrame.totalCount, newFrame.timestamp);
       res.status(200).send(newFrame);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
     }
+  } catch (error) {
+    console.error(newFrame, error);
+    res.status(500).send(error);
   }
 });
 
-const updateSummary = async (incrementValue) => {
-  const summaryCount = await Summary.estimatedDocumentCount();
-  console.log(summaryCount);
-  if (summaryCount) {
-    Summary.findOneAndUpdate(
-      { eventCount: { $gte: 0 } },
-      { $inc: { eventCount: incrementValue } }
+const updateHour = async (incrementValue, timestamp) => {
+  try {
+    await Hour.findOneAndUpdate(
+      {
+        startTime: { $lte: timestamp },
+        endTime: { $gte: timestamp },
+      },
+      {
+        $inc: { totalCount: incrementValue },
+        $setOnInsert: {
+          startTime: dayjs(timestamp, "X").startOf("hour").unix(),
+          endTime: dayjs(timestamp, "X").endOf("hour").unix(),
+        },
+      },
+      { upsert: true }
     ).exec();
-  } else {
-    Summary.create({
-      eventCount: incrementValue,
-      todayCount: incrementValue,
-      yesterdayCount: incrementValue,
-      hourCount: incrementValue,
-      eventDuration: 1,
-    });
+  } catch (error) {
+    console.error(error);
   }
 };
+
+const updateWeek = async (incrementValue) => {};
+
+const updateMonth = async (incrementValue) => {};
+
+const updateYear = async (incrementValue) => {};
 
 router.post("/testjson", (req, res) => {
   if (Math.random() < 0.9) {

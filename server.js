@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-//const db = require("./mongo");
+const db = require("./mongo");
 const trackerRoutes = require("./routes/tracker");
 const clientRoutes = require("./routes/client");
 
@@ -13,13 +13,11 @@ app.use("/client", clientRoutes);
 
 app.use(express.static("client"));
 
-// db.on("error", console.error); //Comment out
+db.on("error", console.error); //Comment out
 
 // Comment ...
-// db.once("open", () => {
-//   console.log("Connected to database");
-//   app.listen(process.env.PORT || 3000);
-// });
+db.once("open", () => {
+  console.log("Connected to database");
+  app.listen(process.env.PORT || 3000);
+});
 //OUT
-
-app.listen(process.env.PORT || 3000);

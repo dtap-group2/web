@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const frameSchema = new Schema({
-  timeFrame: {
+  timestamp: {
     type: Number,
     required: true,
   },
